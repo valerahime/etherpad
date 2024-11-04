@@ -34,14 +34,12 @@ jobs:
       #    parent-image: etherpad:latest
       #    my-image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
 
-      - name: Checkout repository
+      - name: Checkout Etherpad repository
         uses: actions/checkout@v4
+        with:
+          repository: ether/etherpad-lite
         #if: steps.check.outputs.out-of-date == 'true'
       
-      - name: "Download Etherpad's Dockerfile and settings.json"
-        run: curl https://raw.githubusercontent.com/ether/etherpad-lite/refs/heads/develop/Dockerfile -o Dockerfile && curl https://raw.githubusercontent.com/ether/etherpad-lite/refs/heads/develop/settings.json.docker -o settings.json.docker
-        #if: steps.check.outputs.out-of-date == 'true'
-
       # Install the cosign tool except on PR
       # https://github.com/sigstore/cosign-installer
       - name: Install cosign
