@@ -31,8 +31,8 @@ jobs:
         id: check
         uses: twiddler/is-my-docker-parent-image-out-of-date@v1
         with:
-          parent-image: etherpad:latest
-          my-image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+          parent-image: etherpad/etherpad:latest
+          my-image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:main
 
       - name: Checkout Etherpad repository
         uses: actions/checkout@v4
