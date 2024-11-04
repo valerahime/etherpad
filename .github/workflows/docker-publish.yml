@@ -38,8 +38,8 @@ jobs:
         uses: actions/checkout@v4
         #if: steps.check.outputs.out-of-date == 'true'
       
-      - name: "Download Etherpad's Dockerfile"
-        run: curl https://raw.githubusercontent.com/ether/etherpad-lite/refs/heads/develop/Dockerfile -o Dockerfile
+      - name: "Download Etherpad's Dockerfile and settings.json"
+        run: curl https://raw.githubusercontent.com/ether/etherpad-lite/refs/heads/develop/Dockerfile -o Dockerfile && curl https://raw.githubusercontent.com/ether/etherpad-lite/refs/heads/develop/settings.json.docker -o settings.json
         #if: steps.check.outputs.out-of-date == 'true'
 
       # Install the cosign tool except on PR
