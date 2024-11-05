@@ -1,5 +1,7 @@
 # Valeracore Etherpad
 
+[![Etherpad Rebuild](https://github.com/valerahime/etherpad/actions/workflows/docker-publish.yml/badge.svg)](https://github.com/valerahime/etherpad/actions/workflows/docker-publish.yml)
+
 A very basic repo to rebuild the [default Etherpad Docker image](https://hub.docker.com/r/etherpad/etherpad) with a [list of plugins](#plugins).
 
 Nothing is saved directly here (though I might use my own `settings.json` eventually). It's literally just the [workflow file](./.github/workflows/docker-publish.yml), which is pretty close to the default build/push workflow. This one does the following every day at 4 AM:
