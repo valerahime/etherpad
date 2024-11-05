@@ -5,16 +5,26 @@ on:
     - cron: '0 4 * * *'
   push:
     branches: [ "main" ]
-    # Publish semver tags as releases.
-    tags: [ 'v*.*.*' ]
+    tags: [ 'v*.*.*' ] # Publish semver tags as releases.
   pull_request:
     branches: [ "main" ]
 
 env:
-  # Use docker.io for Docker Hub if empty
-  REGISTRY: ghcr.io
-  # github.repository as <account>/<repo>
-  IMAGE_NAME: ${{ github.repository }}
+  REGISTRY: ghcr.io  # Use docker.io for Docker Hub if empty
+  IMAGE_NAME: ${{ github.repository }} # github.repository as <account>/<repo>
+  ETHERPAD_PLUGINS: >
+    ep_align
+    ep_headings2
+    ep_table_of_contents
+    ep_font_size
+    ep_markdown
+    ep_cursortrace
+    ep_font_color
+    ep_set_title_on_pad
+    ep_comments_page
+    ep_font_family
+    ep_hide_referrer
+    
 
 jobs:
   build:
@@ -22,14 +32,12 @@ jobs:
     permissions:
       contents: read
       packages: write
-      # This is used to complete the identity challenge
-      # with sigstore/fulcio when running outside of PRs.
-      id-token: write
+      id-token: write # This is used to complete the identity challenge with sigstore/fulcio when running outside of PRs.
 
     steps:
       - name: Check Etherpad parent image
         id: check
-        uses: twiddler/is-my-docker-parent-image-out-of-date@v1
+        uses: twiddler/is-my-docker-parent-image-out-of-date@v1.0.1
         with:
           parent-image: etherpad/etherpad:latest
           my-image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:main
@@ -40,8 +48,7 @@ jobs:
           repository: ether/etherpad-lite
         if: steps.check.outputs.out-of-date == 'true'
       
-      # Install the cosign tool except on PR
-      # https://github.com/sigstore/cosign-installer
+      # Install the cosign tool except on PR: https://github.com/sigstore/cosign-installer
       - name: Install cosign
         #if: github.event_name != 'pull_request'
         if: github.event_name != 'pull_request' && steps.check.outputs.out-of-date == 'true'
@@ -49,8 +56,7 @@ jobs:
         with:
           cosign-release: 'v2.4.1'
 
-      # Set up BuildKit Docker container builder to be able to build
-      # multi-platform images and export cache
+      # Set up BuildKit Docker container builder to be able to build multi-platform images and export cache
       # https://github.com/docker/setup-buildx-action
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -88,7 +94,7 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          build-args: "ETHERPAD_PLUGINS=ep_align ep_headings2 ep_table_of_contents ep_font_size ep_markdown ep_cursortrace ep_font_color ep_set_title_on_pad ep_comments_page ep_font_family ep_aa_file_menu_toolbar ep_copy_paste_select_all ep_hide_referrer"
+          build-args: "ETHERPAD_PLUGINS=${{ env.ETHERPAD_PLUGINS }}"
         if: steps.check.outputs.out-of-date == 'true'
 
       # Sign the resulting Docker image digest except on PRs.
